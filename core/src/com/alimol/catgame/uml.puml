@@ -1,0 +1,178 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class GameMain {
+public static final int WIDTH
+	public static final int HEIGHT
+	private GameStateManager gsm
+	private SpriteBatch batch
+
+    public void create ()
+    public void render ()
+    public void dispose ()
+}
+
+GameMain o-- GameStateManager
+
+class GameStateManager {
+    private Stack<State> states
+    public GameStateManager()
+    public void push(State state)
+    public void pop()
+    public void set(State state)
+    public void update(float dt)
+    public void render(SpriteBatch spriteBatch)
+}
+
+GameStateManager o-- State
+
+abstract class State {
+    protected OrthographicCamera camera
+    protected GameStateManager gsm
+    public State(GameStateManager gsm)
+    protected abstract void handleInput()
+    public abstract void update(float dt)
+    public abstract void render(SpriteBatch spriteBatch)
+    public abstract void dispose()
+}
+
+State o-- GameStateManager
+
+State <|-- MenuState
+State <|-- PlayState
+State <|-- GameOverState
+
+class MenuState {
+private Texture playBtn
+public MenuState(GameStateManager gsm)
+protected void handleInput()
+public void update (float dt)
+public void render (SpriteBatch spriteBatch
+public void dispose ()
+}
+
+class PlayState {
+public static final int PLATFORMSUPDTIME
+public static final int BIRDSUPDTIME
+public static final int CACTUSUPDTIME
+public static final int NUMBERWIDTH
+Player player
+Queue<Platform> platforms
+Queue<Bird> birds
+Queue<Cactus> cacti
+float stateTime
+Random random
+float nextPlatformTime
+float nextBirdTime
+float nextCactusTime
+Texture numbersSheet
+TextureRegion[] numbers
+Texture arrowTex
+
+public PlayState (GameStateManager gsm)
+public void handleInput ()
+public void update (float dt)
+public void render (SpriteBatch spriteBatch)
+public void dispose ()
+void renderScore (SpriteBatch spriteBatch)
+void die()
+int currentScore ()
+}
+
+PlayState -- MenuState
+PlayState -- GameOverState
+PlayState *-- Player
+PlayState *-- Platform
+PlayState *-- Bird
+PlayState *-- Cactus
+
+class GameOverState{
+public static final int NUMBERWIDTH
+private Texture gameOverTe
+private Texture playBtn
+private int finalScore
+Texture numbersSheet
+TextureRegion[] numbersTex
+
+public GameOverState (GameStateManager gsm, int finalScore)
+protected void handleInput ()
+public void update (float dt)
+public void render (SpriteBatch spriteBatch)
+void renderScore (SpriteBatch spriteBatch, int score)
+public void dispose ()
+}
+
+class Player {
+public static final int GRAVITY
+public static final int JUMPHEIGHT
+public static final int JUMPSNUM
+private Vector2 position
+private Vector 2 velocity
+private Rectangle boxFull
+private Rectangle boxLox
+private int jumps
+public static final int FRAMES_NUM
+private Texture walkSheet
+private TextureRegion[] walkFrames
+private Animation walkAnimation
+private Texture playerTex
+
+public Player(int x, int y)
+public void update (float dt)
+public void jump ()
+public void land (Platform platform)
+}
+
+Player -- Platform
+Player -- Bird
+Player -- Cactus
+
+class Platform {
+public static final int SPEED
+public static final int HEIGHTDISPERTION
+public static final int WIDTHDISPERTION
+public static final int HEIGHT
+private static final Texture platformsSheet
+private static final TextureRegion[] platformsSprites
+private Vector2 position
+private Rectangle platBox
+private int type
+
+public Platform (int x, int y)
+public Platform (int x, int y, int type)
+public void update (float dt, float stateTime)
+}
+
+class Bird {
+static final int FRAMES_NUM
+public static final int SPEED
+private Texture birdSheet
+private TextureRegion[] birdFrames
+private Animation flyAnimation
+private Vector2 position
+private Rectangle birdBox
+
+public Bird (int x, int y)
+public void update (float dt, float stateTime)
+public void dispose ()
+}
+
+class Cactus {
+public static final int FRAMESNUM
+public static final int WIDTH
+public static final int HEIGHT
+private static final Texture cactiSheet
+private static final TextureRegion[] cactiSprites
+private Vector2 position
+private Rectangle cactusBox
+private int type
+private Random random
+
+public Cactus(int x, int y)
+public void update (float dt, float stateTime)
+}
+
+
+
+
+@enduml
